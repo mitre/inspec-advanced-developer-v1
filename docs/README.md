@@ -428,7 +428,109 @@ end
 
 ## 7. Local Resource vs Builtin Resource
 ### 7.1. Local Resource
+Local resources exist only in the profile they are developed in. As was shown in the previous example a local resource would be placed in the libraries directory
+```bash
+$ tree examples/profile
+examples/profile
+...
+├── libraries
+│   └── custom_resource.rb
+```
+
+From there you would develop your custom resource `custom_resource.rb` and be able to utilize the resource within that profile.
+
 ### 7.2. Builtin InSpec Resource
+Sometimes when working on resources you may find a gap in InSpec where a resource doesn't exist where it should. In a situation such as that you may want to develop a resource for upstream InSpec in Github. When developing a resource for InSpec you touch a few more files than just the `custom_resource.rb` as mentioned before.
+
+InSpec directory consists of 581 directories, 1916 files currently. As such it can be a bit confusing when making your way around. The top level directory looks like:
+```bash
+$ tree inspec -L 1 -d
+inspec
+├── contrib
+├── docs
+├── etc
+├── examples
+├── habitat
+├── inspec-bin
+├── kitchen
+├── lib
+├── omnibus
+├── support
+├── tasks
+├── test
+└── www
+
+13 directories
+```
+
+The 3 key directories we need to focus on here are the `docs/` directory, the `lib/` directory and finally the `test/` directory. When developing a resource for upstream InSpec we are required to create the resource itself, create the documentation for the resource and finally create the unit and integration tests for the resource.
+
+Let's take the `file` resource as an example. The files we would need to create/adjust are the following:
+This is where the file resource lies
+::: tip The resource contents
+When creating this resource.rb file or in this scenario the `file.rb`, it would be developed and written the same exact way if you had put it in the libraries directory for a local resource so if you already developed the resource for local use but want to push it to upstream, you can copy and paste the file directly to the following location
+:::
+```bash
+$ tree -L 1 lib/inspec/resources/
+lib/inspec/resources/
+...
+├── file.rb
+...
+
+0 directories, 104 files
+```
+
+This is the helper file you need to adjust for the file resource
+```bash
+$ tree -L 1 lib/inspec/
+lib/inspec/
+...
+├── resources.rb
+...
+
+10 directories, 47 files
+```
+In the `resources.rb` file you would add the following line
+::: tip The resource helper
+When adding this line of code be sure to place the resource in alphabetical order as shown in the example below
+:::
+```ruby
+require "inspec/resources/etc_hosts"
+require "inspec/resources/file"
+require "inspec/resources/filesystem"
+```
+
+Next you would need to write out your unit and integration tests
+```bash
+$ tree test/integration/default/controls/
+test/integration/default/controls/
+...
+├── file_spec.rb
+...
+
+0 directories, 42 files
+```
+
+```bash
+$ tree test/unit/resources/
+test/unit/resources/
+...
+├── file_test.rb
+...
+
+0 directories, 145 files
+```
+
+Finally, you would write up documentation so when others visit the inspec documentation site they are aware of the existence of the resource as well as how to use it
+```bash
+$ tree docs/resources/
+docs/resources/
+...
+├── file.md.erb
+...
+
+0 directories, 156 files
+```
 
 
 ## 8. Dissecting Resources
