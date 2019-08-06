@@ -11,15 +11,15 @@
 
 ### 1.1. Orchestration, Configuration Management, Validation to Deployment
 InSpec operates with most orchestration and CM tools found in the DevOps pipeline implementations
-![Alt text](../images/InSpec_Orchestration.png?raw=true "InSpec Orchestration")
+![Alt text](/InSpec_Orchestration.png)
 
 ---
 ### 1.2. Automating Security Validation Using InSpec
-![Alt text](../images/Automating_Security_Validation.png?raw=true "Automating Security Validation")
+![Alt text](/Automating_Security_Validation.png)
 
 ---
 ### 1.3. Processing InSpec Results
-![Alt text](../images/Processing_InSpec_Results.png?raw=true "Processing InSpec Results")
+![Alt text](/Processing_InSpec_Results.png)
 
 ## 2. Course Overview
 ### 2.1. InSpec Profile Structure
@@ -81,20 +81,64 @@ end
 
 ### 2.3. InSpec Results
 #### 2.3.1. Failure
-![Alt text](../images/InSpec_Failure.png?raw=true "InSpec Failure")
+![Alt text](/InSpec_Failure.png)
 
 #### 2.3.2. Pass
-![Alt text](../images/InSpec_Pass.png?raw=true "InSpec Pass")
+![Alt text](/InSpec_Pass.png)
 
 #### 2.3.3. Multiple Controls
-![Alt text](../images/InSpec_Multiple_Controls.png?raw=true "InSpec Multiple Controls")
+![Alt text](/InSpec_Multiple_Controls.png)
 
 ### 2.4. Tooling and Reporting
-![Alt text](../images/Tooling_Reporting.png?raw=true "Tooling Reporting")
+![Alt text](/Tooling_Reporting.png)
 
 ### 2.5. InSpec Resources
-PLACEHOLDER
-![Alt text](../images/InSpec_Pass.png?raw=true "InSpec Resource example")
+```ruby
+class GordonConfig < Inspec.resource(1)
+  name 'gordon_config'
+
+  # Restrict to only run on the below platforms (if none were given, all OS's supported)
+  supports platform_family: 'fedora'
+  supports platform: 'centos', release: '6.9'
+  # Supports `*` for wildcard matcher in the release
+  supports platform: 'centos', release: '7.*'
+
+  desc '
+    Resource description ...
+  '
+
+  example '
+    describe gordon_config do
+      its("signal") { should eq "on" }
+    end
+  '
+
+  # Load the configuration file on initialization
+  def initialize(path = nil)
+    @path = path || '/etc/gordon.conf'
+    @params = SimpleConfig.new( read_content )
+  end
+
+  # Expose all parameters of the configuration file.
+  def method_missing(name)
+    @params[name]
+  end
+
+  private
+
+  def read_content
+    f = inspec.file(@path)
+    # Test if the path exist and that it's a file
+    if f.file?
+      # Retrieve the file's contents
+      f.content
+    else
+      # If the file doesn't exist, skip all tests that use gordon_config
+      raise Inspec::Exceptions::ResourceSkipped, "Can't read config at #{@path}"
+    end
+  end
+end
+```
 
 
 ## 3. Recap of an InSpec profile
