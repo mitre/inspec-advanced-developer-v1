@@ -419,11 +419,17 @@ end
 
 ## 6. Explore the basics of a resource
 ### 6.1. class
+The class is where the ruby file is defined.
 ### 6.2. name
+The name is how we will call upon this resource within our controls, in the example above that would be `gordon_config`.
 ### 6.3. supports
+Supports are used to define/restrict the ruby resource to work in specific ways, as shown in the example above that is used to restrict our class to specific platforms.
 ### 6.4. desc & examples
+desc is used as a simple in code description of the purpose of this resource while the example is to show how the resource can be used in a control.
 ### 6.5. initialize method
+The initialize method is necessary because in inspec controls when we pass a parameter the ruby class for the resource must have an initialize method to be defined to accept that paraemeter.
 ### 6.6. functionality methods
+These are the methods that perform the actions you require the resource to perform.
 
 
 ## 7. Local Resource vs Builtin Resource
@@ -1368,13 +1374,13 @@ end
 ```
 
 
-## 9. Profile & Resource exercise
+## 9. Setup the git profile & resource example
 ### 9.1. Create new profile
 Let's start by creating a new profile:
 ```bash
 inspec init profile git
 ```
-### 9.2. Develop controls to test / run controls
+### 9.2. Develop controls to test / run profile
 Now lets write some controls and test that they run:
 ```ruby
 # encoding: utf-8
@@ -1407,9 +1413,7 @@ describe command("git --git-dir #{git_dir} log --skip=1 -1 --pretty=format:'%h'"
 end
 ```
 
-
-## 10. Develop resources to take over above controls
-### 10.1. Rewrite first test
+### 9.3. Rewrite test
 Let's rewrite the first test in our example file as follows:
 ```ruby
 # The following banches should exist
@@ -1422,11 +1426,11 @@ Now let's run the profile
 inspec exec git -t ssh://
 ```
 We should get an error because the git method and resource are not defined yet
-### 10.2. Develop git resources
+### 9.4. Develop git resources
 Let's start by creating a new file called git.rb in the libraries directory, the content of the file should look like this:
 ```ruby
 # encoding: utf-8
-# copyright: 2018, The Authors
+# copyright: 2019, The Authors
 
 class Git < Inspec.resource(1)
     name 'git'
@@ -1444,7 +1448,7 @@ Each resource will require an initialization method.
 For our git.rb file lets add that initialization method:
 ```ruby
 # encoding: utf-8
-# copyright: 2018, The Authors
+# copyright: 2019, The Authors
 
 class Git < Inspec.resource(1)
     name 'git'
@@ -1466,7 +1470,7 @@ The test will run but we will get an error saying we do not have a "branches" me
 So let's go back to our ruby.rb file to fix that as seen below:
 ```ruby
 # encoding: utf-8
-# copyright: 2018, The Authors
+# copyright: 2019, The Authors
 
 class Git < Inspec.resource(1)
     name 'git'
@@ -1491,7 +1495,7 @@ Now the error message says that the branches method is returning a null value wh
 We can use the inspec helper method which enables you to invoke any other inspec resource as seen below:
 ```ruby
 # encoding: utf-8
-# copyright: 2018, The Authors
+# copyright: 2019, The Authors
 
 class Git < Inspec.resource(1)
     name 'git'
@@ -1521,7 +1525,7 @@ end
 Let's head over to the git.rb file to create the current_branch method we are invoking in the above test:
 ```ruby
 # encoding: utf-8
-# copyright: 2018, The Authors
+# copyright: 2019, The Authors
 
 class Git < Inspec.resource(1)
     name 'git'
@@ -1551,36 +1555,239 @@ All the tests should pass!
 
 EXERCISE:  
 As solo exercise try to create the final method in the git.rb file to check what is the last commit.
-### 10.3. Develop docker resources
-### 10.4. Rewrite tests and run controls
+
+## 10. Setup the docker profile & resource example
+### 10.1. Create new profile and setup docker files
+First lets write our docker compose file `docker-compose.yml`
+```yaml
+version: '3'
+services:
+  workstation:
+    container_name: workstation
+    image: learnchef/inspec_workstation
+    stdin_open: true
+    tty: true
+    links:
+      - target
+    volumes:
+      - .:/root
+  target:
+    image: learnchef/inspec_target
+    stdin_open: true
+    tty: true
+```
+
+We will continue with writing our controls to check against this docker file
+```bash
+inspec init profile docker-workstations
+```
+
+### 10.2. Develop controls to test/run profile
+In the `controls/example.rb` file we will write our control
+
+```ruby
+describe yaml('file_name') do
+  its('setting') { should_not eq 'value' }
+end
+```
+
+We would need to replace the `file_name` above with the location of the `docker-compose.yml` file. We also need to change the `setting` to grab the tag we want to retrieve. Finally we need to change `value` with the actual value as shown in the docker compose file.
+
+```ruby
+describe yaml('file_name') do
+  its(['services', 'workstation', 'image']) { should_not eq 'learnchef/inspec_workstation' }
+  its(['services', 'workstation', 'volumes']) { should_not cmp '.:/root' }
+end
+```
+
+Now if we test this control using the following command we should see all the tests pass
+
+```bash
+inspec exec docker-workstations
+```
+
+### 10.3. Rewrite test to utilize resource
+Going back to the control, we will write it using a resource that doesn't exist called docker-compose-config that is going to take a path as a parameter.
+
+```ruby
+describe yaml('file_name') do
+  its(['services', 'workstation', 'image']) { should_not eq 'learnchef/inspec_workstation' }
+  its(['services', 'workstation', 'volumes']) { should_not cmp '.:/root' }
+end
+
+describe docker_compose_config('file_name') do
+  its('services.workstation.image') { should_not eq 'learnchef/inspec_workstation' }
+  its('services.workstation.volumes') { should_not cmp '.:/root' }
+end
+```
+
+Now if we go back to terminal and run the same command to execute a scan we should come up with an error
+
+```bash
+inspec exec docker-workstations
+```
+
+We should get an error saying the `docker_compose_config` method does not yet exist, that's because we have not yet defined this resource.
+
+### 10.4. Develop docker resource
+In the `libraries` directory of the profile we will make a `docker_compose_config.rb` file, , the content of the file should look like this:
+
+```ruby
+# encoding: utf-8
+# copyright: 2019, The Authors
+
+class DockerComposeConfig < Inspec.resource(1)
+
+  name 'docker_compose_config'
+
+end
+```
+
+Now when we save and run the profile again using:
+
+```bash
+inspec exec docker-workstations
+```
+
+We will get an error saying we gave it the wrong number of arguments, was given 1 but expected 0. This is because for every class in ruby if we give it a parameter the initialize needs to be defined to accept that parameter.
+
+```ruby
+# encoding: utf-8
+# copyright: 2019, The Authors
+
+class DockerComposeConfig < Inspec.resource(1)
+
+  name 'docker_compose_config'
+
+  def initialize(path)
+    @path = path
+  end
+
+end
+```
+
+Now lets run the profile once more
+
+```bash
+inspec exec docker-workstations
+```
+
+You will notice that this time the profile runs but instead we get a message that the docker_compose_config resource does not have the services method. So lets define that method now:
+
+```ruby
+# encoding: utf-8
+# copyright: 2019, The Authors
+
+class DockerComposeConfig < Inspec.resource(1)
+
+  name 'docker_compose_config'
+
+  def initialize(path)
+    @path = path
+  end
+
+  def services
+
+  end
+
+end
+```
+
+We won't write out what the method is just yet we just want to define it then lets run the profile once more.
+
+```bash
+inspec exec docker-workstations
+```
+
+Now we got a different failure that a NIL value was returned. So now we will go ahead and define the services method. We will use an already existing inspec resource to parse the path file.
+
+```ruby
+# encoding: utf-8
+# copyright: 2019, The Authors
+
+class DockerComposeConfig < Inspec.resource(1)
+
+  name 'docker_compose_config'
+
+  def initialize(path)
+    @path = path
+    @yaml = inspec.yaml(path)
+  end
+
+  def services
+    @yaml['services']
+  end
+
+end
+```
+
+Now lets run the profile once more
+
+```bash
+inspec exec docker-workstations
+```
+
+You will notice that it parses it correctly but instead of our result we end up getting a hash. We need to convert the hash into an object that appears like other objects so that we may use our dot notation. So we will wrap our hash in a Hashie mash, this is a quick way to convert a hash into a ruby object with a number of methods attached to it and is written as follows
+
+```ruby
+# encoding: utf-8
+# copyright: 2019, The Authors
+
+class DockerComposeConfig < Inspec.resource(1)
+
+  name 'docker_compose_config'
+
+  def initialize(path)
+    @path = path
+    @yaml = inspec.yaml(path)
+  end
+
+  def services
+    Hashie::Mash.new @yaml['services']
+  end
+
+end
+```
+
+Lets run the profile again
+
+```bash
+inspec exec docker-workstations
+```
+
+Everything passed!
 
 
 ## 11. Resource Development exercise
 ### 11.1. What the resource should do
-  - a
-  - b
-  - c
-  - d
+  - a (Tomcat conf reader)
+  - b (Users)
+  - c (File)
+  - d ()
 
 
 ## 12. DAY 2: Exercise developing your own resources.
-  - 1
+  - (File resource)
     - a
     - b
     - c
-  - 2
+  - (Directory resource)
     - a
     - b
     - c
-  - 3
+  - (etc host allow/deny)
     - a
     - b
     - c
-  - 4
+  - (Docker)
     - a
     - b
     - c
-  - 5
+  - (etc shadow)
+    - a
+    - b
+    - c
+  - (etc fstab)
     - a
     - b
     - c
