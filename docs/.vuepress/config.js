@@ -66,36 +66,36 @@ module.exports = {
     nav: [
       {
         text: "Course",
-        link: "./course/1"
+        link: "/course/1"
       },
       {
         text: "Install",
         items: [
           {
             text: "Linux",
-            link: "./installation/LinuxInstall.md"
+            link: "/installation/LinuxInstall.md"
           },
           {
             text: "Mac",
-            link: "./installation/MacInstall.md"
+            link: "/installation/MacInstall.md"
           },
           {
             text: "Windows",
-            link: "./installation/WindowsInstall.md"
+            link: "/installation/WindowsInstall.md"
           },
           {
             text: "Vagrant Install",
-            link: "./installation/vagrant_install.md"
+            link: "/installation/vagrant_install.md"
           }
         ]
       },
       {
         text: "Resources",
-        link: "./resources/"
+        link: "/resources/"
       },
       {
         text: "Contact",
-        link: "contact.md"
+        link: "/contact.md"
       }
     ]
   },
