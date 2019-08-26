@@ -2,6 +2,7 @@
   "dependencies": {
     "@vuepress/core": "^1.0.2",
     "@vuepress/theme-default": "^1.0.2",
+    "directory-tree": "^2.2.4",
     "global": "^4.3.2",
     "html-server": "^0.1.1",
     "vuepress": "^1.0.2"
