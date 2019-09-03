@@ -58,8 +58,7 @@ module.exports = {
     editLinkText: 'Help us improve this page!',
     sidebar: {
       '/course/': sidebarChildren('./course'),
-      '/installation/': sidebarChildren('./installation'),
-      '/resources/': sidebarChildren('./resources')
+      '/installation/': sidebarChildren('./installation')
     },
     sidebarDepth: 4,
     navbar: "auto",
