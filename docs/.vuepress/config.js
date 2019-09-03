@@ -81,16 +81,8 @@ module.exports = {
           {
             text: "Windows",
             link: "/installation/WindowsInstall.md"
-          },
-          {
-            text: "Vagrant Install",
-            link: "/installation/vagrant_install.md"
           }
         ]
-      },
-      {
-        text: "Resources",
-        link: "/resources/"
       },
       {
         text: "Contact",
