@@ -5,6 +5,12 @@ Table of Contents:
 
 ## InSpec Users Course
 
+### Running course site
+
+``` bash
+vuepress dev docs
+```
+
 #### Course Content
 [InSpec 101 Course Content](https://github.com/mitre/inspec_training_courses/blob/master/InSpec%20101%20User/InSpec101.md)
 
