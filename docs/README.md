@@ -1,6 +1,6 @@
 ---
 home: true
-actionText: Develop security compliance profiles with InSpec →
+actionText: Get started with building resources/advanced InSpec content →
 actionLink: course/1
 features:
   - title: Describe the InSpec framework and its capabilities
