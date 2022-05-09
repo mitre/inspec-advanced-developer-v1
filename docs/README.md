@@ -3,6 +3,11 @@ home: true
 actionText: Get started with building resources/advanced InSpec content →
 actionLink: course/1
 features:
+  - title: Pre-requisites for the course
+    details: For this follow-on advanced class (basic is a preferred prerequisite), we’ll be writing InSpec Resources in the Ruby language, so it is highly recommended students of the advanced class unfamiliar with Ruby review the following Ruby primers:
+https://www.ruby-lang.org/en/documentation/quickstart/
+https://www.youtube.com/watch?v=t_ispmWmdjY&vl=en
+https://mitre-inspec-developer.netlify.app/
   - title: Run multiple InSpec profiles against an application stack
     details: Learn to utilize profile inheritance to run multiple profiles against an applicaiton stack
   - title: Develop resources to aid in creating controls
