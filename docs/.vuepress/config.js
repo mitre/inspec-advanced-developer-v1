@@ -35,12 +35,12 @@ function sidebarChildren(subDirPath)
 }
 
 module.exports = {
-  title: "MITRE InSpec Advanced Developer Course",
+  title: "MITRE InSpec Advanced Developer Course v1",
   description:
     "The MITRE InSpec Team's Advanced course for InSpec Profile and Resource Development",
 
   themeConfig: {
-    repo: 'mitre/inspec-advanced-developer',
+    repo: 'mitre/inspec-advanced-developer-v1',
     // Customising the header label
     // Defaults to "GitHub"/"GitLab"/"Bitbucket" depending on `themeConfig.repo`
     repoLabel: 'Contribute!',
