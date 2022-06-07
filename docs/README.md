@@ -6,7 +6,7 @@ features:
   - title: Pre-requisites for the course
     details: For this follow-on advanced class (basic is a preferred prerequisite), we’ll be writing InSpec Resources in the Ruby language, so it is highly recommended students of the advanced class unfamiliar with Ruby review the following Ruby primers [Ruby in 20 minutes](https://www.ruby-lang.org/en/documentation/quickstart), [Ruby Programming Language - Full Course](https://www.youtube.com/watch?v=t_ispmWmdjY&vl=en), [InSpec Developer Course](https://mitre-inspec-developer.netlify.app/)
   - title: Run multiple InSpec profiles against an application stack
-    details: Learn to utilize profile inheritance to run multiple profiles against an applicaiton stack
+    details: Learn to utilize profile inheritance to run multiple profiles against an application stack
   - title: Develop resources to aid in creating controls
     details: Understand and be able to develop InSpec resources when the required functionality doesn't exist
   - title: Describe the InSpec framework and its capabilities
@@ -14,7 +14,7 @@ features:
   - title: Describe the architecture of an InSpec profile
     details: Understand InSpec and it's architecture
   - title: Build an InSpec profile to transform security policy into automated security testing
-    details: Understand how as well as hands on development of InSpec profiles
+    details: Understand and perform hands on development of InSpec profiles
   - title: Run an InSpec profile against a component of an application stack
     details: Learn how to utilize the profiles we build to run against an application stack
   - title: View and analyze InSpec results
